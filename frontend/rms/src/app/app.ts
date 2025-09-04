@@ -1,5 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, inject, Injectable, signal } from '@angular/core';
 
+@Injectable({providedIn: 'root'})
 @Component({
   selector: 'app-root',
   imports: [],
@@ -8,4 +10,12 @@ import { Component, signal } from '@angular/core';
 })
 export class App {
   protected readonly title = signal('rms');
+
+  url = "http://localhost:3000";
+
+ http = inject(HttpClient);
+
+  data() {
+    return this.http.get<{name: string, description: string}>(this.url+"/equipment").subscribe(data => data.name);
+ }
 }
