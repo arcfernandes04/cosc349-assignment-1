@@ -5,3 +5,9 @@ services:
       dockerfile: Dockerfile
     ports: 
       - "4200:4200"
+  rest-api:
+    build: 
+      context: rest-api
+      dockerfile: Dockerfile
+    ports: 
+      - "3000:3000"
