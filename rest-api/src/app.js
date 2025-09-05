@@ -6,11 +6,11 @@ const app = express();
 app.use(express.json());
 
 const db = new sql.createConnection({
-    host: "database",
-    port: 3306, 
-    user: "root",
-    password: "test",
-    database: "cosc349_db",
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT, 
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
 });
 
 db.connect((err) => {
@@ -22,7 +22,7 @@ db.connect((err) => {
 });
 
 app.use(cors({
-    origin: "http://localhost:4200"
+    origin: "http://localhost:" + process.env.CLIENT_PORT
 }));
 
 const PORT = 3000;
@@ -30,7 +30,6 @@ const PORT = 3000;
 
 
 app.get("/equipment", (req, res) => {
-    // res.send({"name": "Light 1", "Description": "This is a test light"});
     db.query('SELECT * FROM equipment', (err, results) => {
         if (err) {
             console.error('Error executing query: ' + err.stack);
@@ -41,6 +40,6 @@ app.get("/equipment", (req, res) => {
     });
 })
 
-app.listen(PORT, () => {
-    console.log("Server listening on port: ", PORT);
+app.listen(process.env.API_PORT, () => {
+    console.log("Server listening on port: ", process.env.API_PORT);
 });
