@@ -1,13 +1,29 @@
 services: 
-  frontend:
-    build: 
-      context: frontend
-      dockerfile: Dockerfile
+  database:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: cosc349_db
     ports: 
-      - "4200:4200"
+      - "5000:3306"
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d
+      
   rest-api:
     build: 
       context: rest-api
       dockerfile: Dockerfile
     ports: 
       - "3000:3000"
+    depends_on:
+      - database
+
+  frontend:
+    build: 
+      context: frontend
+      dockerfile: Dockerfile
+    ports: 
+      - "4000:4200"
+    depends_on:
+      - rest-api
