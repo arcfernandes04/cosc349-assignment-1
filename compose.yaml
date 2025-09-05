@@ -31,6 +31,9 @@ services:
     build: 
       context: frontend
       dockerfile: Dockerfile
+      args:
+        API_HOST: http://localhost
+        API_PORT: 3000
     ports: 
       - "4000:4200"
     depends_on:
