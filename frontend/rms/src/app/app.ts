@@ -15,6 +15,6 @@ export class App {
  http = inject(HttpClient);
 
   data() {
-    return this.http.get<{name: string, description: string}>(environment.apiUrl + "/equipment").subscribe(data => data.name);
+    return this.http.get<{name: string, description: string}>(environment.apiUrl + "/inventory").subscribe(data => data.name);
  }
 }

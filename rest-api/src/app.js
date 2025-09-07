@@ -25,12 +25,8 @@ app.use(cors({
     origin: "http://localhost:" + process.env.CLIENT_PORT
 }));
 
-const PORT = 3000;
-
-
-
-app.get("/equipment", (req, res) => {
-    db.query('SELECT * FROM equipment', (err, results) => {
+app.get("/inventory", (req, res) => {
+    db.query('SELECT * FROM item', (err, results) => {
         if (err) {
             console.error('Error executing query: ' + err.stack);
             res.status(500).send('Error fetching users');
