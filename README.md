@@ -31,7 +31,7 @@ docker compose up --build
 
 This may take some time to complete.
 
-Once finished, you can then access the user interface at [http://localhost:4000]()
+Once finished, you can then access the user interface at [http://localhost:4000](http://localhost:4000)
 
 ## Development
 Making changes within the system is easy; simply navigate to the directory containing the project component that you wish to alter and run the following commands to rebuild and restart the container.
