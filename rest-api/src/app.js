@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const sql = require('mysql2');
+const sql = require('mysql2/promise');
 
 const app = express();
 
@@ -26,6 +26,7 @@ async function connectWithRetry(maxRetries = 10, delay = 2000) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       const connection = await sql.createConnection(connectionConfig);
+
       console.log(`Attempt ${attempt}: DB connection successful`);
       return connection;
     } catch (err) {
@@ -49,18 +50,19 @@ connectWithRetry()
   });
 
 // End point definitions
-app.get("/inventory", (req, res) => {
+app.get("/inventory", async (req, res) => {
 
-    db.query('SELECT * FROM item INNER JOIN warehouse ON item.warehouse_id = warehouse.warehouse_id', (err, results) => {
-        if (err) {
-            console.error('Error executing query: ' + err.stack);
-            res.status(500).send('Error fetching users');
-            return;
-        }
-        res.json(results);
-    });
-})
+    try {
+        results = await db.execute('SELECT * FROM item INNER JOIN warehouse ON item.warehouse_id = warehouse.warehouse_id');
+        res.json(results[0]);
+    }catch (err) {
+        console.error(`Error executing query: ${err.stack}`);
+        res.status(500);
+    }
+});
 
+
+// Listening for reqs
 app.listen(process.env.API_PORT, () => {
     console.log("Server listening on port: ", process.env.API_PORT);
 });
