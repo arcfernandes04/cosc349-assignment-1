@@ -53,7 +53,11 @@ connectWithRetry()
 app.get("/inventory", async (req, res) => {
 
     try {
-        results = await db.execute('SELECT * FROM item INNER JOIN warehouse ON item.warehouse_id = warehouse.warehouse_id');
+        results = await db.execute(`
+            SELECT item_id, item_name, item_rental_price, item_quantity, warehouse_name, warehouse_location
+            FROM item 
+            INNER JOIN warehouse ON item.warehouse_id = warehouse.warehouse_id
+            `);
         res.json(results[0]);
     }catch (err) {
         console.error(`Error executing query: ${err.stack}`);

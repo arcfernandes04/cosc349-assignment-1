@@ -1,3 +1,6 @@
+drop table if exists warehouse;
+drop table if exists item;
+
 CREATE TABLE IF NOT EXISTS warehouse(
     warehouse_id INT PRIMARY KEY,
     warehouse_name VARCHAR(100) NOT NULL,
