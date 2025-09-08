@@ -68,11 +68,11 @@ app.post("/item", async (req, res) => {
     const { item_name, item_rental_price, item_quantity, warehouse_id } = req.body;
 
     try { 
-        const [result] = await db.execute('INSERT INTO item (item_name, item_rental_price, item_quantity) values(?,?,?)', [item_name, item_rental_price, item_quantity]);
+        const [result] = await db.execute('INSERT INTO item (item_name, item_rental_price, item_quantity) VALUES (?,?,?)', [item_name, item_rental_price, item_quantity]);
         res.status(201).json({ message: 'Item created successfully', item_id: result.insertId });
     }catch (err) {
         console.error('Insert error:', err);
-        res.status(500);
+        res.status(500).json({ message: 'Add was unsuccessful', err});
     }
 })
 

@@ -1,13 +1,11 @@
 drop table if exists item;
 
 CREATE TABLE IF NOT EXISTS item(
-    item_id INT AUTO_INCREMENT PRIMARY KEY ,
+    item_id INT AUTO_INCREMENT PRIMARY KEY,
     item_name VARCHAR(100) NOT NULL,
     item_description VARCHAR(200),
     item_rental_price DECIMAL(10,2),
-    item_quantity INT,
-
-    FOREIGN KEY (warehouse_id) REFERENCES warehouse(warehouse_id)
+    item_quantity INT
 );
 
 -- Items
