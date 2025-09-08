@@ -3,30 +3,55 @@ const cors = require('cors');
 const sql = require('mysql2');
 
 const app = express();
-app.use(express.json());
 
-const db = new sql.createConnection({
+app.use(express.json());
+app.use(cors({
+    origin: "http://localhost:" + process.env.CLIENT_PORT
+}));
+
+// Connection set up
+successfulConnection = false;
+
+let db;
+
+const connectionConfig = {
     host: process.env.DB_HOST,
     port: process.env.DB_PORT, 
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-});
+};
 
-db.connect((err) => {
-  if (err) {
-    console.error('Error connecting to MySQL: ' + err.stack);
-    return;
+async function connectWithRetry(maxRetries = 10, delay = 2000) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const connection = await sql.createConnection(connectionConfig);
+      console.log(`Attempt ${attempt}: DB connection successful`);
+      return connection;
+    } catch (err) {
+      console.error(`Attempt ${attempt}: Error connecting to database: ${err.stack}`);
+      if (attempt < maxRetries) {
+        console.log(`Waiting ${delay / 1000}s before retry...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      } else {
+        throw new Error('Max retries reached. Could not connect.');
+      }
+    }
   }
-  console.log('Connected to MySQL as ID ' + db.threadId);
-});
+}
 
-app.use(cors({
-    origin: "http://localhost:" + process.env.CLIENT_PORT
-}));
+connectWithRetry()
+  .then(conn => {
+    db = conn;
+  })
+  .catch(err => {
+    console.error('Unexpected error during connection:', err);
+  });
 
+// End point definitions
 app.get("/inventory", (req, res) => {
-    db.query('SELECT * FROM item', (err, results) => {
+
+    db.query('SELECT * FROM item INNER JOIN warehouse ON item.warehouse_id = warehouse.warehouse_id', (err, results) => {
         if (err) {
             console.error('Error executing query: ' + err.stack);
             res.status(500).send('Error fetching users');

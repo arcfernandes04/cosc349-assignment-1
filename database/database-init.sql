@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS item(
     description VARCHAR(200),
     rental_price DECIMAL(10,2),
     quantity INT,
-    supplier_id INT,
     warehouse_id INT,
 
     FOREIGN KEY (warehouse_id) REFERENCES warehouse(warehouse_id)
