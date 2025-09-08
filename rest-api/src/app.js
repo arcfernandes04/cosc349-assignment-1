@@ -54,9 +54,8 @@ app.get("/inventory", async (req, res) => {
 
     try {
         results = await db.execute(`
-            SELECT item_id, item_name, item_rental_price, item_quantity, warehouse_name, warehouse_location
-            FROM item 
-            INNER JOIN warehouse ON item.warehouse_id = warehouse.warehouse_id
+            SELECT item_id, item_name, item_rental_price, item_quantity
+            FROM item
             `);
         res.json(results[0]);
     }catch (err) {
@@ -64,6 +63,18 @@ app.get("/inventory", async (req, res) => {
         res.status(500);
     }
 });
+
+app.post("/item", async (req, res) => {
+    const { item_name, item_rental_price, item_quantity, warehouse_id } = req.body;
+
+    try { 
+        const [result] = await db.execute('INSERT INTO item (item_name, item_rental_price, item_quantity) values(?,?,?)', [item_name, item_rental_price, item_quantity]);
+        res.status(201).json({ message: 'Item created successfully', item_id: result.insertId });
+    }catch (err) {
+        console.error('Insert error:', err);
+        res.status(500);
+    }
+})
 
 
 // Listening for reqs
