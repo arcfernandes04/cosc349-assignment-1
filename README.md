@@ -15,7 +15,7 @@ The MySQL database allows the inventory data to be stored, and is initalised wit
 
 ## Quickstart
 
-To start, you must first have [Docker](https://www.docker.com/) and [git](https://git-scm.com/downloads) installed on your PC.
+To start, you must first have [git](https://git-scm.com/downloads) installed on your PC, and have AWS credentials.
 
 Then you may clone the repository using the following command
 
@@ -23,15 +23,33 @@ Then you may clone the repository using the following command
 git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
 ```
 
-Start the application by running the following command within the `cosc349-assignment-1` directory.
+To start up an EC2 instance to run the frontend on, first navigate to EC2 on your AWS Console. 
 
-```
-docker compose up --build
-```
+You may then launch a new instance using the "Launch Instance" button. 
 
-This may take some time to complete.
+Name your instance something appropriate, and select **Amazon Linux** as the AMI. It should be fine to leave the other AMI related settings at their defaults
 
-Once finished, you can then access the user interface at [http://localhost:4000](http://localhost:4000)
+For instance type, I chose to run t2.micro, as this is a cheap and suitable option for the frontend, however depending on how you choose to extend the application, please keep in mind your instance requirements. 
+
+If you do not already have a key pair login configured or wish to configure one unique to this instance, do so here and make sure to download the `.pem` private key somewhere appropriate so that you can access this later. 
+
+Under network settings, the default SSH traffic configuration should allow SSH traffic from anywhere, if this is not the case please change these settings to match. You must also allow HTTP and HTTPS traffic from the internet.
+
+The remaining default configurations are suitable for the frontend. Launch your instance.
+
+Once running, select your instance and hit the "Connect" button and follow the SSH client connection instructions to SSH into your instance. 
+
+further steps (WIP):
+1. build the frontend using ng build
+2. copy dist files somewhere sensible
+3. scp -i [private key path] -r [location of dist files]/* [the ec2-user@... addr]:~/dist/ to copy dist over to the ec2 instance
+4. in the ssh client:
+   1. sudo chmod 777 dist
+   2. sudo yum install nginx -y
+   3. sudo systemctl enable nginx
+   4. sudo systemctl restart nginx
+   5. changes to nginx conf + perms to allow this
+5. open the instance's public IPv4 addr to see the frontend
 
 ## Development
 Making changes within the system is easy; simply navigate to the directory containing the project component that you wish to alter and run the following commands to rebuild and restart the container.
