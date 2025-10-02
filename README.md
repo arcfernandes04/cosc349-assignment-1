@@ -45,16 +45,35 @@ further steps (WIP):
 1. build the frontend using ng build
 2. copy dist files somewhere sensible
 3. scp -i [private key path] -r [location of dist files]/* [the ec2-user@... addr]:~/dist/ to copy dist over to the ec2 instance
+   1. Vs `rsync`?
 4. in the ssh client:
    1. sudo chmod 777 dist
    2. sudo yum install nginx -y
    3. sudo systemctl enable nginx
    4. sudo systemctl restart nginx
-   5. changes to nginx conf + perms to allow this
+   5. changes to nginx conf:
+        * vim /etc/nginx/nginx.conf
+        * server {...}
+          * server_name [the ec2 DNS addr];
+          * root /home/eec2-user/dist;
+          * index index.html;
+          * location / {
+            * tru_files $uri /index.html;
+          * }
+    6. sudo chown -R nginx:nginx /home/ec2-user/dist
+    7. sudo chmod -R 755 /home/ec2-user/dist
+    8. sudo chmod 755 /home/ec2-user /home/ect-user/dist
+    9. sudo cmod 644 /home/ec2-user/dist.index.html
+    10. sudo nginx -t
+    11. sudo sytemctl reload nginx
+    12. sudo sytemctl restart nginx
 5. open the instance's public IPv4 addr to see the frontend
 
 
 ### REST API
+[tutorial](https://docs.aws.amazon.com/apigateway/latest/developerguide/getting-started-rest-new-console.html)
+
+[EC2 Hosted Node.js Server](https://www.youtube.com/watch?v=23FdTTuFDC0)
 
 ### DB
 * RDS create DB
