@@ -23,6 +23,8 @@ Then you may clone the repository using the following command
 git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
 ```
 
+### Frontend
+
 To start up an EC2 instance to run the frontend on, first navigate to EC2 on your AWS Console. 
 
 You may then launch a new instance using the "Launch Instance" button. 
@@ -50,6 +52,22 @@ further steps (WIP):
    4. sudo systemctl restart nginx
    5. changes to nginx conf + perms to allow this
 5. open the instance's public IPv4 addr to see the frontend
+
+
+### REST API
+
+### DB
+* RDS create DB
+  * MySQL
+  * Dev/Test
+  * name appropriately
+  * gen password - make sure to note it down!!
+  * no public access (we only want E2 instances to connect)
+* Can see endpoint info within the db info
+  * if yes for public access can literally just do connections as per
+* need an E2 instance that exists to have the connection ability?
+  * E2 hosts the DBMS and RDS Hosts the DB?
+
 
 ## Development
 Making changes within the system is easy; simply navigate to the directory containing the project component that you wish to alter and run the following commands to rebuild and restart the container.
