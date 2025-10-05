@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const sql = require('mysql2/promise');
@@ -6,7 +7,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors({
-    origin: "http://localhost:" + process.env.CLIENT_PORT
+    origin: 'http://52.55.81.125'
 }));
 
 // Connection set up
