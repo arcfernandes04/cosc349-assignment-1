@@ -75,17 +75,27 @@ further steps (WIP):
 
 [EC2 Hosted Node.js Server](https://www.youtube.com/watch?v=23FdTTuFDC0)
 
+Same set-up steps up to SSH into the instance BUT don't allow HTTP/HTTPS traffic
+Should be under same VPC as DB
+
+1. sudo yum install -y nodejs
+2. sudo dnf install mariadb105
+3. mysql -h [dns of db] -P [db port] -u [user name] -P
+4. create the db and tables + insert
+5. scp to copy the application files over to instance
+6. npm i
+7. update env to target the RDS DB
+8. update frontend to target api
+9. need to give permission for access (security group >add rule or something> TCP on port 3000 + any IPv4)
+
 ### DB
 * RDS create DB
   * MySQL
   * Dev/Test
   * name appropriately
   * gen password - make sure to note it down!!
-  * no public access (we only want E2 instances to connect)
-* Can see endpoint info within the db info
-  * if yes for public access can literally just do connections as per
-* need an E2 instance that exists to have the connection ability?
-  * E2 hosts the DBMS and RDS Hosts the DB?
+  * make sure to give it a name under teh advanced config
+  * Make sure to "connext to an EC2 instance" - this will be your server - allows for the communiation
 
 
 ## Development
