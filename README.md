@@ -24,66 +24,65 @@ git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
 ```
 
 <table>
-  <tr>
-    <th>Component</th>
+<tr>
+  <th>Component</th>
     <th>Set up</th>
   </tr>
   <tr>
   <td>Database </td>
 
   <td>
-      Navigate to the RDS service in your AWS console and select `Create Database`. 
-      <br><br> 
-      Select **MySQL** as the engine type and **Dev/Test** as the sample template. 
-      <br><br> 
-      Name your DB cluster appropriately, and create a set of credentials (make sure to take note of any auto generated credentials). 
-      <br><br> 
-      Under `Additional Configuration` make sure to give your database a name so that a database is created. 
-      <br><br> 
-      You may leave most other default configuration settings as is, or adjusted to suit any modifications you have made to the application. 
-      <br><br> 
+    Navigate to the RDS service in your AWS console and select <code>Create Database</code> 
+    <br><br> 
+    Select <strong>MySQL</strong> as the engine type and <strong>Dev/Test</strong> as the sample template. 
+    <br><br> 
+    Name your DB cluster appropriately, and create a set of credentials (make sure to take note of any auto generated credentials). 
+    <br><br> 
+    Under <code>Additional Configuration</code> make sure to give your database a name so that a database is created. 
+    <br><br> 
+    You may leave most other default configuration settings as is, or adjusted to suit any modifications you have made to the application. 
+    <br><br> 
+  </td>
+</tr>
+<tr>
+  <td>REST API</td>
+  <td>
+    Navigate to the Ec2 service in your AWS console and select <code>Launch Instance</code>. 
+    <br><br>
+    Name your instance appropriately and select <strong>Amazon Linux</strong> as the AMI. 
+    <br><br>
+    For instance type I select t2.micro as this is a cheap and suitable option for the REST API and front end, however consider these options as you extend the application. 
+    <br><br>
+    If you do not already have a key pair login configured or wish to configure one unique to this instance, do so here and make sure to download the <code>.pem</code> private key somewhere appropriate so that you can access this later. 
+    <br><br>
+    Under network settings, the default SSH traffic configuration should allow SSH traffic from anywhere, if this is not the case please change these settings to match.
+    <br><br>
+    You may leave most other default configuration settings as is, or adjusted to suit any modifications you have made to the application. Launch your instance. (Beyond here, steps differ for Frontend component).
+    <br><br>
+    Once running, select your instance and hit the "Connect" button and follow the SSH client connection instructions to SSH into your instance.
+    <br><br>
+    In a separate terminal window, run the following command to copy the application files over to the remote instance:
+    <br><br>
+    <pre><code>> scp -i [private key path] -r [repository path]/rest-api/src/* ec2-user@[EC2 instance public DNS address]:~/dist/</code></pre>
+    <br><br>
+    <i>Note the use of square brackets to denote where you need to fill in information.</i>
+    <br><br>
+    Back in the SSH connection terminal window, install the dependencies required for the REST API, run the following commands:
+    <br><br>
+    <pre><code>> sudo yum install -y nodejs</code><br><code>> sudo dnf install mariadb105</code><br><code>> npm install</code></pre>
+    <br><br>
+    Run the following command to insert the sample data into the database:
+    <br><br>
+    <pre><code>> mysql -h [Database public endpoint] -P [Database port] -u [Database username] -p < database-init.sql
+</code></pre>
+    <br><br>
+    <i>The database endpoint and port can be found within the database Connectivity & security information.</i>
+    <br><br>
+
   </td>
 </tr>
 </table>
-| Component | Set up | 
-| :--- | :--- | 
-| Database | Navigate to the RDS service in your AWS console and select `Create Database`. <br><br> Select **MySQL** as the engine type and **Dev/Test** as the sample template. <br><br> Name your DB cluster appropriately, and create a set of credentials (make sure to take note of any auto generated credentials). <br><br> Under `Additional Configuration` make sure to give your database a name so that a database is created. <br><br> You may leave most other default configuration settings as is, or adjusted to suit any modifications you have made to the application. <br><br> | 
-| REST API | Navigate to the Ec2 service in your AWS console and select `Launch Instance`. 
 
-Name your instance appropriately and select **Amazon Linux** as the AMI. 
-
-For instance type I select t2.micro as this is a cheap and suitable option for the REST API and front end, however consider these options as you extend the application. 
-
-If you do not already have a key pair login configured or wish to configure one unique to this instance, do so here and make sure to download the `.pem` private key somewhere appropriate so that you can access this later. 
-
-Under network settings, the default SSH traffic configuration should allow SSH traffic from anywhere, if this is not the case please change these settings to match.
-
-You may leave most other default configuration settings as is, or adjusted to suit any modifications you have made to the application. Launch your instance. (Beyond here, steps differ for Frontend component).
-
-Once running, select your instance and hit the "Connect" button and follow the SSH client connection instructions to SSH into your instance.
-
-In a separate terminal window, run the following command to copy the application files over to the remote instance.
-
-```
-> scp -i [private key path] -r [repository path]/rest-api/src/* ec2-user@[EC2 instance public DNS address]:~/dist/
-```
-*Note the use of square brackets to denote where you need to fill in information.*
-
-Back in the SSH connection terminal window, install the dependencies required for the REST API, run the following commands:
-
-```
-> sudo yum install -y nodejs
-> sudo dnf install mariadb105 
-> npm install
-```
-
-Run the following command to insert the sample data into the database:
-
-``` 
-> mysql -h [Database public endpoint] -P [Database port] -u [Database username] -p < database-init.sql
-```
-*The database endpoint and port can be found within the database Connectivity & security information.* | 
-| Charlie | 22 | 
 
 
 
