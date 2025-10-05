@@ -6,9 +6,7 @@ const sql = require('mysql2/promise');
 const app = express();
 
 app.use(express.json());
-app.use(cors({
-    origin: 'http://52.55.81.125'
-}));
+app.use(cors());
 
 // Connection set up
 successfulConnection = false;

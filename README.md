@@ -23,6 +23,10 @@ Then you may clone the repository using the following command
 git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
 ```
 
+<br>
+
+### Setting up the individual components
+
 <table>
 <tr>
   <th>Component</th>
@@ -57,96 +61,75 @@ git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
     <br><br>
     Under network settings, the default SSH traffic configuration should allow SSH traffic from anywhere, if this is not the case please change these settings to match.
     <br><br>
-    You may leave most other default configuration settings as is, or adjusted to suit any modifications you have made to the application. Launch your instance. (Beyond here, steps differ for Frontend component).
+    You may leave most other default configuration settings as is, or adjusted to suit any modifications you have made to the application. 
     <br><br>
-    Once running, select your instance and hit the "Connect" button and follow the SSH client connection instructions to SSH into your instance.
+    <strong><i>Launch your instance. (Beyond here, steps differ for Frontend component).</strong></i>
+</td></tr>
+<tr><td>Connecting REST API to Database</td> 
+<td>Back in the AWS console, view your database and select <strong>Connect to an EC2 instance</strong> and choose your REST API EC2 instance.
+<br><br> Update <code>.env</code> to reflect the true database details. <br><br></td>
+</tr>
+<tr><td></td><td>
+    Once running, select your instance and hit the <code>Connect</code> button and follow the SSH client connection instructions to SSH into your instance.
     <br><br>
     In a separate terminal window, run the following command to copy the application files over to the remote instance:
     <br><br>
-    <pre><code>> scp -i [private key path] -r [repository path]/rest-api/src/* ec2-user@[EC2 instance public DNS address]:~/dist/</code></pre>
-    <br><br>
+    <pre><code>scp -i [private key path] -r [repository path]/rest-api/src/* ec2-user@[EC2 instance public DNS address]:~/</code></pre>
     <i>Note the use of square brackets to denote where you need to fill in information.</i>
     <br><br>
     Back in the SSH connection terminal window, install the dependencies required for the REST API, run the following commands:
     <br><br>
-    <pre><code>> sudo yum install -y nodejs</code><br><code>> sudo dnf install mariadb105</code><br><code>> npm install</code></pre>
-    <br><br>
+    <pre><code>sudo yum install -y nodejs</code><br><code>sudo dnf install mariadb105</code><br><code>npm install</code></pre>
+    <br>
     Run the following command to insert the sample data into the database:
     <br><br>
-    <pre><code>> mysql -h [Database public endpoint] -P [Database port] -u [Database username] -p < database-init.sql
+    <pre><code>mysql -h [Database public endpoint] -P [Database port] -u [Database username] -p < database-init.sql
 </code></pre>
-    <br><br>
     <i>The database endpoint and port can be found within the database Connectivity & security information.</i>
     <br><br>
-
+  </td>
+</tr>
+<tr>
+  <td>Frontend</td>
+  <td>
+    Firstly, you must build the frontend project using
+    <br><br>
+    <pre><code>ng build</code></pre>
+    <br>
+    Next, follow the above steps for setting up an EC2 instance for the Frontend application similarly to the REST API - One additional step to note is that under network settings, You must also allow HTTP and HTTPS traffic from the internet.
+    <br><br>
+</td></tr>
+<tr><td>Connecting Frontend to REST API</td> 
+<td>Back in the AWS console, view your REST API EC2 instance and add a rule allowing <strong>TCP on port 3000 from any IPv4 address</strong> under <strong>security groups</strong>.<br><br>
+Next, update <code>environment.ts</code> to reflect the actual REST API URI.</td>
+</tr>
+<tr><td></td><td>
+    Once running, select your instance and hit the <code>Connect</code> button and follow the SSH client connection instructions to SSH into your instance.
+    <br><br>
+    In a separate terminal window, run the following command to copy the application files over to the remote instance:
+    <br><br>
+    <pre><code>scp -i [private key path] -r [repository path]/rest-api/src/* ec2-user@[EC2 instance public DNS address]:~/dist/</code></pre>
+    <br>
+      Back in the SSH connection terminal window, install the dependencies required for the REST API, run the following command:
+      <pre><code>sudo yum install nginx -y</code><br>sudo systemctl enable nginx</code><br><code>sudo systemctl restart nginx</code></pre>
+      <br>
+      Make the following changes to the <code>/etc/nginx/nginx.conf</code> configuration file within the <code>server</code> object:
+      <br><br>
+      <ul>
+        <li>server_name [] </li>
+        <li>root /home/ec2-user/dist</li>
+        <li>index index.html</li>
+        <li>location / { <br>
+            try_files $uri /index.html; <br>
+        }
+      </ul>
+      <br>
+      To apply the required permission changes run the following commands: 
+      <pre><code>sudo chown -R nginx:nginx /home/ec2-user/dist/</code><br><code>sudo chmod -R 755 /home/ec2-user/dist</code><br><code>sudo chmod 644 /home/ec2-user/dist/index.html</code><br><code>sudo nginx -t</code><br><code>sudo systemctl reload nginx</code><br><code>sudo system restart nginx</code></pre>
   </td>
 </tr>
 </table>
 
-
-
-
-### Conecting it all up
-
-
-### Frontend
-
-You must also allow HTTP and HTTPS traffic from the internet.
-
-The remaining default configurations are suitable for the frontend. Launch your instance.
-
-Once running, select your instance and hit the "Connect" button and follow the SSH client connection instructions to SSH into your instance. 
-
-further steps (WIP):
-1. build the frontend using ng build
-2. copy dist files somewhere sensible
-3. scp -i [private key path] -r [location of dist files]/* [the ec2-user@... addr]:~/dist/ to copy dist over to the ec2 instance
-   1. Vs `rsync`?
-4. in the ssh client:
-   1. sudo chmod 777 dist
-   2. sudo yum install nginx -y
-   3. sudo systemctl enable nginx
-   4. sudo systemctl restart nginx
-   5. changes to nginx conf:
-        * vim /etc/nginx/nginx.conf
-        * server {...}
-          * server_name [the ec2 DNS addr];
-          * root /home/eec2-user/dist;
-          * index index.html;
-          * location / {
-            * tru_files $uri /index.html;
-          * }
-    6. sudo chown -R nginx:nginx /home/ec2-user/dist
-    7. sudo chmod -R 755 /home/ec2-user/dist
-    8. sudo chmod 755 /home/ec2-user /home/ect-user/dist
-    9. sudo cmod 644 /home/ec2-user/dist.index.html
-    10. sudo nginx -t
-    11. sudo sytemctl reload nginx
-    12. sudo sytemctl restart nginx
-5. open the instance's public IPv4 addr to see the frontend
-
-
-### REST API
-[tutorial](https://docs.aws.amazon.com/apigateway/latest/developerguide/getting-started-rest-new-console.html)
-
-[EC2 Hosted Node.js Server](https://www.youtube.com/watch?v=23FdTTuFDC0)
-
-Same set-up steps up to SSH into the instance BUT don't allow HTTP/HTTPS traffic
-Should be under same VPC as DB
-
-1. sudo yum install -y nodejs
-2. sudo dnf install mariadb105
-3. mysql -h [dns of db] -P [db port] -u [user name] -P
-4. create the db and tables + insert
-5. scp to copy the application files over to instance
-6. npm i
-7. update env to target the RDS DB
-8. update frontend to target api
-9. need to give permission for access (security group >add rule or something> TCP on port 3000 + any IPv4)
-
-### DB
-* 
-  * Make sure to "connext to an EC2 instance" - this will be your server - allows for the communiation
 
 
 ## Development
