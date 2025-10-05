@@ -3,9 +3,9 @@
 This is a simple web application that can be used to view and update items available in the inventory of a rental warehouse. 
 
 It consists of three main components across separate containers: 
-* An Angular based web application
-* A Node.js / Express.js based REST API 
-* A MySQL based database
+* An Angular based web application hosted in an EC2 instance
+* A Node.js / Express.js based REST API hosted in an EC2 instance
+* A MySQL based database hosted as an RDS database. 
 
 The web application provides a user interface through which users can view and add products in the inventory. This interacts with the REST API through HTTP GET and POST requests. 
 
@@ -13,9 +13,9 @@ The REST API allows for a decoupling of interaction between the user interface a
 
 The MySQL database allows the inventory data to be stored, and is initalised with sample data.  
 
-## Quickstart
+## Getting it all up and running
 
-To start, you must first have [git](https://git-scm.com/downloads) installed on your PC, and have AWS credentials.
+To start, you must first have [git](https://git-scm.com/downloads) installed on your PC, and have valid AWS credentials.
 
 Then you may clone the repository using the following command
 
@@ -23,19 +23,76 @@ Then you may clone the repository using the following command
 git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
 ```
 
-### Frontend
+<table>
+  <tr>
+    <th>Component</th>
+    <th>Set up</th>
+  </tr>
+  <tr>
+  <td>Database </td>
 
-To start up an EC2 instance to run the frontend on, first navigate to EC2 on your AWS Console. 
+  <td>
+      Navigate to the RDS service in your AWS console and select `Create Database`. 
+      <br><br> 
+      Select **MySQL** as the engine type and **Dev/Test** as the sample template. 
+      <br><br> 
+      Name your DB cluster appropriately, and create a set of credentials (make sure to take note of any auto generated credentials). 
+      <br><br> 
+      Under `Additional Configuration` make sure to give your database a name so that a database is created. 
+      <br><br> 
+      You may leave most other default configuration settings as is, or adjusted to suit any modifications you have made to the application. 
+      <br><br> 
+  </td>
+</tr>
+</table>
+| Component | Set up | 
+| :--- | :--- | 
+| Database | Navigate to the RDS service in your AWS console and select `Create Database`. <br><br> Select **MySQL** as the engine type and **Dev/Test** as the sample template. <br><br> Name your DB cluster appropriately, and create a set of credentials (make sure to take note of any auto generated credentials). <br><br> Under `Additional Configuration` make sure to give your database a name so that a database is created. <br><br> You may leave most other default configuration settings as is, or adjusted to suit any modifications you have made to the application. <br><br> | 
+| REST API | Navigate to the Ec2 service in your AWS console and select `Launch Instance`. 
 
-You may then launch a new instance using the "Launch Instance" button. 
+Name your instance appropriately and select **Amazon Linux** as the AMI. 
 
-Name your instance something appropriate, and select **Amazon Linux** as the AMI. It should be fine to leave the other AMI related settings at their defaults
-
-For instance type, I chose to run t2.micro, as this is a cheap and suitable option for the frontend, however depending on how you choose to extend the application, please keep in mind your instance requirements. 
+For instance type I select t2.micro as this is a cheap and suitable option for the REST API and front end, however consider these options as you extend the application. 
 
 If you do not already have a key pair login configured or wish to configure one unique to this instance, do so here and make sure to download the `.pem` private key somewhere appropriate so that you can access this later. 
 
-Under network settings, the default SSH traffic configuration should allow SSH traffic from anywhere, if this is not the case please change these settings to match. You must also allow HTTP and HTTPS traffic from the internet.
+Under network settings, the default SSH traffic configuration should allow SSH traffic from anywhere, if this is not the case please change these settings to match.
+
+You may leave most other default configuration settings as is, or adjusted to suit any modifications you have made to the application. Launch your instance. (Beyond here, steps differ for Frontend component).
+
+Once running, select your instance and hit the "Connect" button and follow the SSH client connection instructions to SSH into your instance.
+
+In a separate terminal window, run the following command to copy the application files over to the remote instance.
+
+```
+> scp -i [private key path] -r [repository path]/rest-api/src/* ec2-user@[EC2 instance public DNS address]:~/dist/
+```
+*Note the use of square brackets to denote where you need to fill in information.*
+
+Back in the SSH connection terminal window, install the dependencies required for the REST API, run the following commands:
+
+```
+> sudo yum install -y nodejs
+> sudo dnf install mariadb105 
+> npm install
+```
+
+Run the following command to insert the sample data into the database:
+
+``` 
+> mysql -h [Database public endpoint] -P [Database port] -u [Database username] -p < database-init.sql
+```
+*The database endpoint and port can be found within the database Connectivity & security information.* | 
+| Charlie | 22 | 
+
+
+
+### Conecting it all up
+
+
+### Frontend
+
+You must also allow HTTP and HTTPS traffic from the internet.
 
 The remaining default configurations are suitable for the frontend. Launch your instance.
 
@@ -89,12 +146,7 @@ Should be under same VPC as DB
 9. need to give permission for access (security group >add rule or something> TCP on port 3000 + any IPv4)
 
 ### DB
-* RDS create DB
-  * MySQL
-  * Dev/Test
-  * name appropriately
-  * gen password - make sure to note it down!!
-  * make sure to give it a name under teh advanced config
+* 
   * Make sure to "connext to an EC2 instance" - this will be your server - allows for the communiation
 
 

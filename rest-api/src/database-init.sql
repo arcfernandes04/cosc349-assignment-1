@@ -1,3 +1,4 @@
+use rms;
 drop table if exists item;
 
 CREATE TABLE IF NOT EXISTS item(
