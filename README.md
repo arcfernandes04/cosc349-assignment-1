@@ -131,6 +131,8 @@ Next, update <code>environment.ts</code> to reflect the actual REST API URI.</td
 </table>
 
 
+To access the frontend, visit the IP address or DNS address of the frontend EC2 instance.
+
 
 ## Development
 Making changes within the system is easy; simply navigate to the directory containing the project component that you wish to alter and run the following commands to rebuild and restart the container.
