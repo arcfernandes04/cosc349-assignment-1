@@ -15,7 +15,7 @@ The MySQL database allows the inventory data to be stored, and is initalised wit
 
 ## Getting it all up and running
 
-To start, you must first have [git](https://git-scm.com/downloads) installed on your PC, and have valid AWS credentials.
+To start, you must first have [git](https://git-scm.com/downloads) installed on your PC, and have access to the AWS console with valid credentials.
 
 Then you may clone the repository using the following command
 
