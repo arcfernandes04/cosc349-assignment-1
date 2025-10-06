@@ -74,19 +74,23 @@ git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
     <br><br>
     In a separate terminal window, run the following command to copy the application files over to the remote instance:
     <br><br>
-    <pre><code>scp -i [private key path] -r [repository path]/rest-api/src/* ec2-user@[EC2 instance public DNS address]:~/</code></pre>
+    <pre><code>> scp -i [private key path] -r [repository path]/rest-api/src/* ec2-user@[EC2 instance public DNS address]:~/</code></pre>
     <i>Note the use of square brackets to denote where you need to fill in information.</i>
     <br><br>
     Back in the SSH connection terminal window, install the dependencies required for the REST API, run the following commands:
     <br><br>
-    <pre><code>sudo yum install -y nodejs</code><br><code>sudo dnf install mariadb105</code><br><code>npm install</code></pre>
+    <pre><code>> sudo yum install -y nodejs</code><br><code>> sudo dnf install mariadb105</code><br><code>> npm install</code></pre>
     <br>
     Run the following command to insert the sample data into the database:
     <br><br>
-    <pre><code>mysql -h [Database public endpoint] -P [Database port] -u [Database username] -p < database-init.sql
+    <pre><code>> mysql -h [Database public endpoint] -P [Database port] -u [Database username] -p < database-init.sql
 </code></pre>
     <i>The database endpoint and port can be found within the database Connectivity & security information.</i>
     <br><br>
+    Now, you can exit the mysql connection and run the following command to get the REST API up and running:
+    <br><br>
+    <pre><code>> npm run start</code></pre>
+    <br>
   </td>
 </tr>
 <tr>
@@ -94,7 +98,7 @@ git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
   <td>
     Firstly, you must build the frontend project using
     <br><br>
-    <pre><code>ng build</code></pre>
+    <pre><code>> ng build</code></pre>
     <br>
     Next, follow the above steps for setting up an EC2 instance for the Frontend application similarly to the REST API - One additional step to note is that under network settings, You must also allow HTTP and HTTPS traffic from the internet.
     <br><br>
@@ -108,10 +112,10 @@ Next, update <code>environment.ts</code> to reflect the actual REST API URI.</td
     <br><br>
     In a separate terminal window, run the following command to copy the application files over to the remote instance:
     <br><br>
-    <pre><code>scp -i [private key path] -r [repository path]/rest-api/src/* ec2-user@[EC2 instance public DNS address]:~/dist/</code></pre>
+    <pre><code>> scp -i [private key path] -r [repository path]/rest-api/src/* ec2-user@[EC2 instance public DNS address]:~/dist/</code></pre>
     <br>
       Back in the SSH connection terminal window, install the dependencies required for the REST API, run the following command:
-      <pre><code>sudo yum install nginx -y</code><br>sudo systemctl enable nginx</code><br><code>sudo systemctl restart nginx</code></pre>
+      <pre><code>> sudo yum install nginx -y</code><br><code>> sudo systemctl enable nginx</code><br><code>> sudo systemctl restart nginx</code></pre>
       <br>
       Make the following changes to the <code>/etc/nginx/nginx.conf</code> configuration file within the <code>server</code> object:
       <br><br>
@@ -125,7 +129,7 @@ Next, update <code>environment.ts</code> to reflect the actual REST API URI.</td
       </ul>
       <br>
       To apply the required permission changes run the following commands: 
-      <pre><code>sudo chown -R nginx:nginx /home/ec2-user/dist/</code><br><code>sudo chmod -R 755 /home/ec2-user/dist</code><br><code>sudo chmod 644 /home/ec2-user/dist/index.html</code><br><code>sudo nginx -t</code><br><code>sudo systemctl reload nginx</code><br><code>sudo system restart nginx</code></pre>
+      <pre><code>> sudo chown -R nginx:nginx /home/ec2-user/dist/</code><br><code>> sudo chmod -R 755 /home/ec2-user/dist</code><br><code>> sudo chmod 644 /home/ec2-user/dist/index.html</code><br><code>> sudo nginx -t</code><br><code>> sudo systemctl reload nginx</code><br><code>> sudo system restart nginx</code></pre>
   </td>
 </tr>
 </table>
@@ -135,11 +139,10 @@ To access the frontend, visit the IP address or DNS address of the frontend EC2 
 
 
 ## Development
-Making changes within the system is easy; simply navigate to the directory containing the project component that you wish to alter and run the following commands to rebuild and restart the container.
+Redeploying after making changes within the system is easy; as your EC2 instances will already be configured, you simply need to copy any changes over to the instances.
 
-```
-docker compose down frontend
-docker compose build frontend
-docker compose up frontend
-```
-Replace "frontend" with "database" or "rest-api" as appropriate.
+For the REST API, once changes have been made, you can remove the old files and copy the updated ones to the EC2 instance using the `scp` command. Note that you will also need to stop and restart the application (`npm run start`).
+
+For the frontend application, this requires you to rebuild the application using `ng build` and to remove the old build files from the instance. To copy over the updated files, you will first need to `chmod 777` the **dist** folder to allow this action. 
+
+Next, you can copy over the updated files using the `scp` commands above, and then follow the permission modification steps. You may need to reload and restart `nginx` as well.
