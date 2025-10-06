@@ -79,7 +79,7 @@ git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
     <br><br>
     Back in the SSH connection terminal window, install the dependencies required for the REST API, run the following commands:
     <br><br>
-    <pre><code>> sudo yum install -y nodejs</code><br><code>> sudo dnf install mariadb105</code><br><code>> npm install</code></pre>
+    <pre><code>> sudo yum install -y nodejs</code><br><code>> sudo dnf install mariadb105</code><br><code>> npm install</code><br><code>> npm install -g pm2</code></pre>
     <br>
     Run the following command to insert the sample data into the database:
     <br><br>
@@ -89,7 +89,7 @@ git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
     <br><br>
     Now, you can exit the mysql connection and run the following command to get the REST API up and running:
     <br><br>
-    <pre><code>> npm run start</code></pre>
+    <pre><code>> pm2 start src/app.js</code></pre>
     <br>
   </td>
 </tr>
