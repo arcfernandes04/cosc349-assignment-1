@@ -25,15 +25,13 @@ git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
 
 <br>
 
-### Setting up the individual components
-
 <table>
 <tr>
-  <th>Component</th>
-    <th>Set up</th>
+  <th>What</th>
+    <th>Set up instructions</th>
   </tr>
   <tr>
-  <td>Database </td>
+  <td>Database</td>
 
   <td>
     Navigate to the RDS service in your AWS console and select <code>Create Database</code> 
@@ -49,7 +47,7 @@ git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
   </td>
 </tr>
 <tr>
-  <td>REST API</td>
+  <td>REST API EC2 instance</td>
   <td>
     Navigate to the Ec2 service in your AWS console and select <code>Launch Instance</code>. 
     <br><br>
@@ -63,15 +61,15 @@ git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
     <br><br>
     You may leave most other default configuration settings as is, or adjusted to suit any modifications you have made to the application. 
     <br><br>
-    <strong><i>Launch your instance. (Beyond here, steps differ for Frontend component).</strong></i>
+    Launch your instance.
     <br><br>
     In the AWS console, under the EC2 service Network & Security select <strong>Elastic IPs</strong>. Here, you can Allocate an Elastic IP address, and then associate it with the EC2 instance hosting the REST API. This allows a static IP/DNS address, avoiding the issue of different addresses being assigned to the REST API every time the instance is restarted.
 </td></tr>
-<tr><td>Connecting REST API to Database</td> 
+<tr><td>Connecting the REST API to the Database</td> 
 <td>Back in the AWS console, view your database and select <strong>Connect to an EC2 instance</strong> and choose your REST API EC2 instance.
 <br><br> Update <code>.env</code> and line #1 in <code>database-init.sql</code> to reflect the true database details. <br><br></td>
 </tr>
-<tr><td></td><td>
+<tr><td>REST API application</td><td>
     Once running, select your instance and hit the <code>Connect</code> button and follow the SSH client connection instructions to SSH into your instance.
     <br><br>
     In a separate terminal window, run the following command to copy the application files over to the remote instance:
@@ -96,7 +94,7 @@ git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
   </td>
 </tr>
 <tr>
-  <td>Frontend</td>
+  <td>Frontend EC2 Instance</td>
   <td>
     Firstly, you must build the frontend project using
     <br><br>
@@ -109,7 +107,7 @@ git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
 <td>Back in the AWS console, view your REST API EC2 instance and add a rule allowing <strong>TCP on port 3000 from any IPv4 address</strong> under <strong>security groups</strong>.<br><br>
 Next, update <code>environment.ts</code> to reflect the actual REST API DNS (the Elastic IP IP/DNS allocated earlier).</td>
 </tr>
-<tr><td></td><td>
+<tr><td>Frontend Application</td><td>
     Once running, select your instance and hit the <code>Connect</code> button and follow the SSH client connection instructions to SSH into your instance.
     <br><br>
     In a separate terminal window, run the following command to copy the application files over to the remote instance:
@@ -137,7 +135,9 @@ Next, update <code>environment.ts</code> to reflect the actual REST API DNS (the
 </table>
 
 
-To access the frontend, visit the IP address or DNS address of the frontend EC2 instance.
+To access the frontend, visit the IP address or DNS address of the allocated Elastic IP/DNS address.
+
+Note that once the REST API instance has been started up after a termination, you will need to ssh into the EC2 instance to run the pm2 start command again. 
 
 
 ## Development
