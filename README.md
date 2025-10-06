@@ -112,7 +112,7 @@ Next, update <code>environment.ts</code> to reflect the actual REST API URI.</td
     <br><br>
     In a separate terminal window, run the following command to copy the application files over to the remote instance:
     <br><br>
-    <pre><code>> scp -i [private key path] -r [repository path]/frontend/dist/rms/browser/* ec2-user@[EC2 instance public DNS address]:~/dist/</code></pre>
+    <pre><code>> scp -i [private key path] -r [repository path]/frontend/rms/dist/rms/browser/* ec2-user@[EC2 instance public DNS address]:~/dist/</code></pre>
     <br>
       Back in the SSH connection terminal window, install the dependencies required for the REST API, run the following command:
       <pre><code>> sudo yum install nginx -y</code><br><code>> sudo systemctl enable nginx</code><br><code>> sudo systemctl restart nginx</code></pre>
@@ -129,7 +129,7 @@ Next, update <code>environment.ts</code> to reflect the actual REST API URI.</td
       </ul>
       <br>
       To apply the required permission changes run the following commands: 
-      <pre><code>> sudo chown -R nginx:nginx /usr/share/nginx/html/frontend</code><br><code>> sudo cp /home/ec2-user/dist/* /usr/share/nginx/html/frontend</code><br><code>> sudo nginx -t</code><br><code>> sudo systemctl reload nginx</code><br><code>> sudo systemctl restart nginx</code></pre>
+      <pre><code>> sudo mkdir -p /usr/share/nginx/html/frontend</code><br><code>> sudo chown -R nginx:nginx /usr/share/nginx/html/frontend</code><br><code>> sudo cp /home/ec2-user/dist/* /usr/share/nginx/html/frontend</code><br><code>> sudo nginx -t</code><br><code>> sudo systemctl reload nginx</code><br><code>> sudo systemctl restart nginx</code></pre>
   </td>
 </tr>
 </table>
