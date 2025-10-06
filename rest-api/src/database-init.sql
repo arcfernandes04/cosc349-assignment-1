@@ -1,4 +1,6 @@
+-- Replace rms with your database name
 use rms;
+
 drop table if exists item;
 
 CREATE TABLE IF NOT EXISTS item(

@@ -38,8 +38,8 @@ git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
   <td>
     Navigate to the RDS service in your AWS console and select <code>Create Database</code> 
     <br><br> 
-    Select <strong>MySQL</strong> as the engine type and <strong>Dev/Test</strong> as the sample template. 
-    <br><br> 
+    Select <strong>MySQL</strong> as the engine type and <strong>Sandbox</strong> as the sample template. 
+    <br><br>
     Name your DB cluster appropriately, and create a set of credentials (make sure to take note of any auto generated credentials). 
     <br><br> 
     Under <code>Additional Configuration</code> make sure to give your database a name so that a database is created. 
@@ -67,14 +67,14 @@ git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
 </td></tr>
 <tr><td>Connecting REST API to Database</td> 
 <td>Back in the AWS console, view your database and select <strong>Connect to an EC2 instance</strong> and choose your REST API EC2 instance.
-<br><br> Update <code>.env</code> to reflect the true database details. <br><br></td>
+<br><br> Update <code>.env</code> and line #1 in <code>database-init.sql</code> to reflect the true database details. <br><br></td>
 </tr>
 <tr><td></td><td>
     Once running, select your instance and hit the <code>Connect</code> button and follow the SSH client connection instructions to SSH into your instance.
     <br><br>
     In a separate terminal window, run the following command to copy the application files over to the remote instance:
     <br><br>
-    <pre><code>> scp -i [private key path] -r [repository path]/rest-api/src/* ec2-user@[EC2 instance public DNS address]:~/</code></pre>
+    <pre><code>> scp -i [private key path] -r [repository path]/rest-api/* ec2-user@[EC2 instance public DNS address]:~/</code></pre>
     <i>Note the use of square brackets to denote where you need to fill in information.</i>
     <br><br>
     Back in the SSH connection terminal window, install the dependencies required for the REST API, run the following commands:
@@ -83,7 +83,7 @@ git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
     <br>
     Run the following command to insert the sample data into the database:
     <br><br>
-    <pre><code>> mysql -h [Database public endpoint] -P [Database port] -u [Database username] -p < database-init.sql
+    <pre><code>> mysql -h [Database public endpoint] -P [Database port] -u [Database username] -p < src/database-init.sql
 </code></pre>
     <i>The database endpoint and port can be found within the database Connectivity & security information.</i>
     <br><br>
@@ -112,7 +112,7 @@ Next, update <code>environment.ts</code> to reflect the actual REST API URI.</td
     <br><br>
     In a separate terminal window, run the following command to copy the application files over to the remote instance:
     <br><br>
-    <pre><code>> scp -i [private key path] -r [repository path]/rest-api/src/* ec2-user@[EC2 instance public DNS address]:~/dist/</code></pre>
+    <pre><code>> scp -i [private key path] -r [repository path]/frontend/dist/rms/browser/* ec2-user@[EC2 instance public DNS address]:~/dist/</code></pre>
     <br>
       Back in the SSH connection terminal window, install the dependencies required for the REST API, run the following command:
       <pre><code>> sudo yum install nginx -y</code><br><code>> sudo systemctl enable nginx</code><br><code>> sudo systemctl restart nginx</code></pre>
@@ -120,16 +120,16 @@ Next, update <code>environment.ts</code> to reflect the actual REST API URI.</td
       Make the following changes to the <code>/etc/nginx/nginx.conf</code> configuration file within the <code>server</code> object:
       <br><br>
       <ul>
-        <li>server_name [] </li>
-        <li>root /home/ec2-user/dist</li>
-        <li>index index.html</li>
+        <li>server_name [EC2 instance DNS address];</li>
+        <li>root /usr/share/nginx/html/frontend;</li>
+        <li>index index.html;</li>
         <li>location / { <br>
             try_files $uri /index.html; <br>
         }
       </ul>
       <br>
       To apply the required permission changes run the following commands: 
-      <pre><code>> sudo chown -R nginx:nginx /home/ec2-user/dist/</code><br><code>> sudo chmod -R 755 /home/ec2-user/dist</code><br><code>> sudo chmod 644 /home/ec2-user/dist/index.html</code><br><code>> sudo nginx -t</code><br><code>> sudo systemctl reload nginx</code><br><code>> sudo system restart nginx</code></pre>
+      <pre><code>> sudo chown -R nginx:nginx /usr/share/nginx/html/frontend</code><br><code>> sudo cp /home/ec2-user/dist/* /usr/share/nginx/html/frontend</code><br><code>> sudo nginx -t</code><br><code>> sudo systemctl reload nginx</code><br><code>> sudo systemctl restart nginx</code></pre>
   </td>
 </tr>
 </table>
