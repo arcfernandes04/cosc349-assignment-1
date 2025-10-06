@@ -1,1 +1,1 @@
-export const environment = { apiUrl: 'http://ec2-3-82-48-221.compute-1.amazonaws.com:3000' };
+export const environment = { apiUrl: 'http://ec2-98-90-148-59.compute-1.amazonaws.com:3000' };

@@ -64,6 +64,8 @@ git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
     You may leave most other default configuration settings as is, or adjusted to suit any modifications you have made to the application. 
     <br><br>
     <strong><i>Launch your instance. (Beyond here, steps differ for Frontend component).</strong></i>
+    <br><br>
+    In the AWS console, under the EC2 service Network & Security select <strong>Elastic IPs</strong>. Here, you can Allocate an Elastic IP address, and then associate it with the EC2 instance hosting the REST API. This allows a static IP/DNS address, avoiding the issue of different addresses being assigned to the REST API every time the instance is restarted.
 </td></tr>
 <tr><td>Connecting REST API to Database</td> 
 <td>Back in the AWS console, view your database and select <strong>Connect to an EC2 instance</strong> and choose your REST API EC2 instance.
@@ -105,7 +107,7 @@ git clone https://github.com/arcfernandes04/cosc349-assignment-1.git
 </td></tr>
 <tr><td>Connecting Frontend to REST API</td> 
 <td>Back in the AWS console, view your REST API EC2 instance and add a rule allowing <strong>TCP on port 3000 from any IPv4 address</strong> under <strong>security groups</strong>.<br><br>
-Next, update <code>environment.ts</code> to reflect the actual REST API URI.</td>
+Next, update <code>environment.ts</code> to reflect the actual REST API DNS (the Elastic IP IP/DNS allocated earlier).</td>
 </tr>
 <tr><td></td><td>
     Once running, select your instance and hit the <code>Connect</code> button and follow the SSH client connection instructions to SSH into your instance.
